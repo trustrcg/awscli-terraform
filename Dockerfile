@@ -1,8 +1,16 @@
-FROM hashicorp/terraform:latest
+FROM hashicorp/terraform:1.10.1 as tf
+
+FROM alpine:3.20
 
 RUN apk add --no-cache \
     aws-cli \
-    bash \
-    jq
+    ca-certificates \
+    git \
+    groff \
+    openssh-client \
+    tzdata \
+    && update-ca-certificates
 
-ENTRYPOINT ["/bin/bash"]
+COPY --from=tf /bin/terraform /bin/terraform
+
+ENTRYPOINT ["/bin/sh", "-c"]
